@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:teslo_shop/features/products/presentation/providers/login_form_provider.dart';
+import 'package:teslo_shop/features/auth/presentation/providers/login_form_provider.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
 import '../providers/auth_provider.dart';
@@ -91,6 +91,8 @@ class _LoginForm extends ConsumerWidget {
             label: 'Contraseña',
             obscureText: true,
             onChanged: ref.read(LoginFormProvider.notifier).onPasswordChange,
+            onFieldSubmitted: (_) =>
+                ref.read(LoginFormProvider.notifier).onFormSubmit(),
             errorMessage:
                 loginForm.isFormPosted ? loginForm.password.errorMessage : null,
           ),
@@ -101,9 +103,11 @@ class _LoginForm extends ConsumerWidget {
               child: CustomFilledButton(
                 text: 'Ingresar',
                 buttonColor: Colors.black,
-                onPressed: () {
-                  ref.read(LoginFormProvider.notifier).onFormSubmit();
-                },
+                onPressed: loginForm.isPosting
+                    ? null
+                    : () {
+                        ref.read(LoginFormProvider.notifier).onFormSubmit();
+                      },
               )),
           const Spacer(flex: 2),
           Row(
